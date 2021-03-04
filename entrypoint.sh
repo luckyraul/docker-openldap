@@ -71,6 +71,7 @@ EOF
         IFS=","; declare -a schemas=($SLAPD_ADDITIONAL_SCHEMAS); unset IFS
 
         for schema in "${schemas[@]}"; do
+            echo "Applying ${schema} schema..."
             slapadd -n0 -F /etc/ldap/slapd.d -l "/etc/ldap/schema/${schema}.ldif"
         done
     fi
@@ -81,16 +82,6 @@ EOF
         for module in "${modules[@]}"; do
             echo "Applying ${module} module..."
             module_file="/etc/ldap/modules/${module}.ldif"
-
-            if [ "$module" == 'ppolicy' ]; then
-                SLAPD_PPOLICY_DN_PREFIX="${SLAPD_PPOLICY_DN_PREFIX:-cn=default,ou=policies}"
-                sed -i "s/\(olcPPolicyDefault: \)PPOLICY_DN/\1${SLAPD_PPOLICY_DN_PREFIX}$dc_string/g" $module_file
-
-                echo "Applying PasswordPolicy..."
-                sed -i "s|{{ SLAPD_BASE }}|${base_dc}|g" /etc/ldap/config/ppolicy.ldif
-                slapadd -F /etc/ldap/slapd.d -l /etc/ldap/config/ppolicy.ldif
-            fi
-
             slapadd -n0 -F /etc/ldap/slapd.d -l "$module_file"
         done
     fi
@@ -107,17 +98,11 @@ EOF
     echo "Waiting for OpenLDAP to start..."
     while [ ! -e /run/slapd/slapd.pid ]; do sleep 0.1; done
 
-    echo "Applying PPolicy"
-    ldapadd -c -Y EXTERNAL -Q -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif
-    echo "Applying DynGroup"
-    ldapadd -c -Y EXTERNAL -Q -H ldapi:/// -f /etc/ldap/schema/dyngroup.ldif
-    echo "Applying Sudo"
-    ldapadd -c -Y EXTERNAL -Q -H ldapi:/// -f /etc/ldap/schema/sudo.ldif
-
     if [[ -n "$SLAPD_ADDITIONAL_CONFIG" ]]; then
       IFS=","; declare -a modules=($SLAPD_ADDITIONAL_CONFIG); unset IFS
 
       for module in "${modules[@]}"; do
+          echo "Applying ${module} config..."
           ldapmodify -Y EXTERNAL -Q -H ldapi:/// -f /etc/ldap/config/${module}.ldif
       done
     fi

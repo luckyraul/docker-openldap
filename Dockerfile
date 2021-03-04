@@ -4,7 +4,9 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV SLAPD_TLS_CA /etc/ldap/tls/ca.pem
 ENV SLAPD_TLS_CRT /etc/ldap/tls/cert.pem
 ENV SLAPD_TLS_KEY /etc/ldap/tls/cert.key
+ENV SLAPD_ADDITIONAL_SCHEMAS ppolicy,dyngroup,sudo
 ENV SLAPD_ADDITIONAL_MODULES memberof,refint,ppolicy
+ENV SLAPD_ADDITIONAL_CONFIG sudo,posix
 
 MAINTAINER Nikita Tarasov <nikita@mygento.ru>
 
