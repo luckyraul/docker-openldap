@@ -1,0 +1,16 @@
+dn: cn=config
+changetype: modify
+replace: olcTLSCACertificateFile
+olcTLSCACertificateFile: {{ SLAPD_TLS_CA }}
+-
+replace: olcTLSCertificateFile
+olcTLSCertificateFile: {{ SLAPD_TLS_CRT }}
+-
+replace: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: {{ SLAPD_TLS_KEY }}
+-
+replace: olcTLSDHParamFile
+olcTLSDHParamFile: /etc/ldap/tls/dhparam.pem
+-
+replace: olcSecurity
+olcSecurity: tls=1

@@ -110,6 +110,8 @@ EOF
     ldapadd -c -Y EXTERNAL -Q -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif
     echo "Applying DynGroup"
     ldapadd -c -Y EXTERNAL -Q -H ldapi:/// -f /etc/ldap/schema/dyngroup.ldif
+    echo "Applying Sudo"
+    ldapadd -c -Y EXTERNAL -Q -H ldapi:/// -f /etc/ldap/schema/sudo.ldif
 
     if [[ -n "$SLAPD_ADDITIONAL_CONFIG" ]]; then
       IFS=","; declare -a modules=($SLAPD_ADDITIONAL_CONFIG); unset IFS
@@ -133,12 +135,12 @@ EOF
 
         chown -R openldap:openldap /etc/ldap/tls
 
-        sed -i "s|{{ SLAPD_TLS_CA }}|${SLAPD_TLS_CA}|g" /etc/ldap/config/olcTLS.ldif
-        sed -i "s|{{ SLAPD_TLS_CRT }}|${SLAPD_TLS_CRT}|g" /etc/ldap/config/olcTLS.ldif
-        sed -i "s|{{ SLAPD_TLS_KEY }}|${SLAPD_TLS_KEY}|g" /etc/ldap/config/olcTLS.ldif
+        sed -i "s|{{ SLAPD_TLS_CA }}|${SLAPD_TLS_CA}|g" /etc/ldap/config/tls.ldif
+        sed -i "s|{{ SLAPD_TLS_CRT }}|${SLAPD_TLS_CRT}|g" /etc/ldap/config/tls.ldif
+        sed -i "s|{{ SLAPD_TLS_KEY }}|${SLAPD_TLS_KEY}|g" /etc/ldap/config/tls.ldif
 
         echo "Applying TLS..."
-        ldapmodify -Y EXTERNAL -Q -H ldapi:/// -f /etc/ldap/config/olcTLS.ldif
+        ldapmodify -Y EXTERNAL -Q -H ldapi:/// -f /etc/ldap/config/tls.ldif
     fi
 
     # stop OpenLDAP
