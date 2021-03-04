@@ -79,18 +79,19 @@ EOF
         IFS=","; declare -a modules=($SLAPD_ADDITIONAL_MODULES); unset IFS
 
         for module in "${modules[@]}"; do
-             module_file="/etc/ldap/modules/${module}.ldif"
+            echo "Applying ${module} module..."
+            module_file="/etc/ldap/modules/${module}.ldif"
 
-             if [ "$module" == 'ppolicy' ]; then
-                 SLAPD_PPOLICY_DN_PREFIX="${SLAPD_PPOLICY_DN_PREFIX:-cn=default,ou=policies}"
-                 sed -i "s/\(olcPPolicyDefault: \)PPOLICY_DN/\1${SLAPD_PPOLICY_DN_PREFIX}$dc_string/g" $module_file
+            if [ "$module" == 'ppolicy' ]; then
+                SLAPD_PPOLICY_DN_PREFIX="${SLAPD_PPOLICY_DN_PREFIX:-cn=default,ou=policies}"
+                sed -i "s/\(olcPPolicyDefault: \)PPOLICY_DN/\1${SLAPD_PPOLICY_DN_PREFIX}$dc_string/g" $module_file
 
-                 echo "Applying PasswordPolicy..."
-                 sed -i "s|{{ SLAPD_BASE }}|${base_dc}|g" /etc/ldap/config/ppolicy.ldif
-                 slapadd -F /etc/ldap/slapd.d -l /etc/ldap/config/ppolicy.ldif
-             fi
+                echo "Applying PasswordPolicy..."
+                sed -i "s|{{ SLAPD_BASE }}|${base_dc}|g" /etc/ldap/config/ppolicy.ldif
+                slapadd -F /etc/ldap/slapd.d -l /etc/ldap/config/ppolicy.ldif
+            fi
 
-             slapadd -n0 -F /etc/ldap/slapd.d -l "$module_file"
+            slapadd -n0 -F /etc/ldap/slapd.d -l "$module_file"
         done
     fi
 

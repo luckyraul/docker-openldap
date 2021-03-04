@@ -1,9 +1,10 @@
 FROM debian:buster-slim
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV SLAPD_TLS_CA=/etc/ldap/tls/ca.pem
-ENV SLAPD_TLS_CRT=/etc/ldap/tls/cert.pem
-ENV SLAPD_TLS_KEY=/etc/ldap/tls/cert.key
+ENV SLAPD_TLS_CA /etc/ldap/tls/ca.pem
+ENV SLAPD_TLS_CRT /etc/ldap/tls/cert.pem
+ENV SLAPD_TLS_KEY /etc/ldap/tls/cert.key
+ENV SLAPD_ADDITIONAL_MODULES memberof,refint,ppolicy
 
 MAINTAINER Nikita Tarasov <nikita@mygento.ru>
 
@@ -17,6 +18,7 @@ RUN apt-get -qqy update && \
 
 RUN mv /etc/ldap /etc/ldap.dist
 
+COPY modules/ /etc/ldap.dist/modules
 COPY config/ /etc/ldap.dist/config
 ADD https://raw.githubusercontent.com/sudo-project/sudo/main/doc/schema.olcSudo /etc/ldap.dist/schema/sudo.ldif
 
