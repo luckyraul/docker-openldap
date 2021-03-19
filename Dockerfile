@@ -7,6 +7,7 @@ ENV SLAPD_TLS_KEY /etc/ldap/tls/cert.key
 ENV SLAPD_ADDITIONAL_SCHEMAS ppolicy,dyngroup,sudo
 ENV SLAPD_ADDITIONAL_MODULES memberof,refint,ppolicy
 ENV SLAPD_ADDITIONAL_CONFIG sudo,posix
+ENV SLAPD_LOGLEVEL 32768
 
 MAINTAINER Nikita Tarasov <nikita@mygento.ru>
 
@@ -31,4 +32,5 @@ VOLUME ["/etc/ldap", "/var/lib/ldap"]
 ENTRYPOINT ["/entrypoint.sh"]
 EXPOSE 389
 
-CMD ["slapd", "-d", "32768", "-u", "openldap", "-g", "openldap"]
+# CMD ["slapd", "-d", "32768", "-u", "openldap", "-g", "openldap"]
+CMD ["sh", "-c", "slapd -d $SLAPD_LOGLEVEL -u openldap -g openldap"]
