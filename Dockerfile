@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV SLAPD_TLS_CA /etc/ldap/tls/ca.pem
@@ -11,10 +11,10 @@ ENV SLAPD_LOGLEVEL 32768
 
 MAINTAINER Nikita Tarasov <nikita@mygento.ru>
 
-RUN echo 'deb http://deb.debian.org/debian buster-backports main' > /etc/apt/sources.list.d/backports.list
+RUN echo 'deb http://deb.debian.org/debian bullseye-backports main' > /etc/apt/sources.list.d/backports.list
 
 RUN apt-get -qqy update && \
-    DEBIAN_FRONTEND=noninteractive apt-get -qqy install -t buster-backports slapd ldap-utils && \
+    DEBIAN_FRONTEND=noninteractive apt-get -qqy install -t bullseye-backports slapd ldap-utils && \
     DEBIAN_FRONTEND=noninteractive apt-get -qqy install openssl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
