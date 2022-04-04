@@ -23,7 +23,7 @@ RUN mv /etc/ldap /etc/ldap.dist
 
 COPY modules/ /etc/ldap.dist/modules
 COPY config/ /etc/ldap.dist/config
-ADD https://raw.githubusercontent.com/sudo-project/sudo/main/doc/schema.olcSudo /etc/ldap.dist/schema/sudo.ldif
+ADD https://raw.githubusercontent.com/sudo-project/sudo/main/docs/schema.olcSudo /etc/ldap.dist/schema/sudo.ldif
 
 COPY entrypoint.sh /entrypoint.sh
 
