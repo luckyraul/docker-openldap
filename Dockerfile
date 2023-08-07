@@ -1,5 +1,7 @@
 FROM debian:bullseye-slim
 
+LABEL org.opencontainers.image.source https://github.com/luckyraul/docker-openldap
+
 ENV DEBIAN_FRONTEND noninteractive
 ENV SLAPD_TLS_CA /etc/ldap/tls/ca.pem
 ENV SLAPD_TLS_CRT /etc/ldap/tls/cert.pem
@@ -15,7 +17,7 @@ RUN echo 'deb http://deb.debian.org/debian bullseye-backports main' > /etc/apt/s
 
 RUN apt-get -qqy update && \
     DEBIAN_FRONTEND=noninteractive apt-get -qqy install -t bullseye-backports slapd ldap-utils && \
-    DEBIAN_FRONTEND=noninteractive apt-get -qqy install openssl && \
+    DEBIAN_FRONTEND=noninteractive apt-get -qqy install openssl jq && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

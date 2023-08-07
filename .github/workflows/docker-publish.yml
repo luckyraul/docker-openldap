@@ -14,12 +14,12 @@ jobs:
         version:
           - 'stable'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build Image
         run: docker build -t luckyraul/openldap:${{ matrix.version }} .
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -35,3 +35,14 @@ jobs:
 
           docker tag $IMAGE_NAME $IMAGE_ID
           docker push $IMAGE_ID
+  post_build:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete untagged ghcr LR
+        uses: Chizkiyahu/delete-untagged-ghcr-action@v2
+        with:
+          token: ${{ secrets.CR_PAT }}
+          repository_owner: ${{ github.repository_owner }}
+          owner_type: user
+          package_name: openldap
